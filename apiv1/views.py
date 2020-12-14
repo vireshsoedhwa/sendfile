@@ -8,7 +8,9 @@ import requests
 import logging
 logger = logging.getLogger(__name__)
 
-# from .models import ImageItem
+from .yt import YT
+
+from .models import Video
 # from .models import bThread
 
 # from .serializers import ImageItemSerializer
@@ -25,7 +27,9 @@ class submitlink(APIView):
     def post(self, request, format=None):              
 
         # logger.error(request.data['query'])
-        logger.error(request.data['query'])
+        logger.error(request.data['query']['link2'])
 
+        newdownload = YT(request.data['query']['link2'])
+        newdownload.run()
 
         return Response("hello")
