@@ -1,4 +1,4 @@
-"""fileuploader URL Configuration
+"""sendfile URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.1/topics/http/urls/
@@ -18,8 +18,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('api/', include('threadwatcher.urls')),
-    path('api/', include('apiv1.urls')),
     path('', include('frontend.urls')),
-
 ]
