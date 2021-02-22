@@ -3,7 +3,7 @@
 set -e
 
 >&2 echo "Make Database migrations"
-# python manage.py makemigrations apiv1
+python manage.py makemigrations frontend
 echo "-------------------------------------------------------------------------------------------\n"
 
 

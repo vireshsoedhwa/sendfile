@@ -1,77 +1,112 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState, useMemo } from 'react';
+import MyDropzone from './Dropzone'
 
-
-// const useStyles = makeStyles((theme) => ({
-//     root: {
-//         flexGrow: 1,
-//     },
-//     paper: {
-//         height: 140,
-//         width: 100,
-//     },
-//     control: {
-//         padding: theme.spacing(2),
-//     },
-// }));
+import axios from 'axios';
 
 export default function App() {
     const [Data, setData] = useState(null);
     const [Url, setUrl] = useState(null);
+    const [Mode, setMode] = useState("upload")
+    const [Downloadid, setDownloadid] = useState(null)
+    const [Uploadid, setUploadid] = useState(null)
 
-    useEffect(() => {
-        // GetLatestData();
-    }, []);
+    const triggerdownload = (response) => {
+        console.log(response)
+        let filename = response.headers['content-disposition'].split("filename=\"")[1]
+        filename = filename.substring(0, filename.length - 1)
 
-    const GetLatestData = () => {
-        fetch("/api/index")
-            .then(response => {
-                if (response.status > 400) {
-                }
-                return response.json();
-            })
-            .then(data => {
-                let testdata = data.map((item) => (
-                    <Fragment key={item.url}>
-                        <ListItemText primary={item.name} secondary={item.url} />
-                    </Fragment>
-                ))
-                console.log(testdata)
-                setData(testdata)
-            });
-    };
-
-    const PostUrl = () => {
-        const data = { query: Url };
-        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
-        // console.log(csrftoken)
-
-        fetch('/api/', {
-            method: 'POST', // or 'PUT'
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'X-CSRFTOKEN': csrftoken
-            },
-            body: JSON.stringify(data),
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
     }
 
- 
+    const processresponse = (response) => {
+        triggerdownload(response)
+    }
+
+    const downloadfile = () => {
+        const link = document.createElement('a');
+        link.href = url;
+        console.log(window.location.href)
+
+    }
+
+    const uploadfinished = (response) => {
+        setUploadid(response.data)
+    }
+
+    useEffect(() => {
+
+        if (window.location.pathname.length > 2) {
+            axios({
+                method: 'get',
+                url: '/find' + window.location.pathname,
+                responseType: 'json'
+            })
+                .then(function (response) {
+                    console.log("download found")
+                    // console.log(response.data)
+                    setDownloadid(response.data)
+                    setMode("download")
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    // window.location.replace("/");
+                });
+        }
+
+
+    }, []);
+
+    const copyToClipboard = (e) => {
+        console.log(e.target.value)
+        console.log(window.location.href + Uploadid)
+    }
+
 
     return (
         <Fragment>
-            <div>
-                {document.querySelector('[name=csrfmiddlewaretoken]').value}
-                <br></br>
-                {document.cookie}
-            </div>
+            {Mode === "upload" ?
+                <div>
+                    <MyDropzone upload={uploadfinished}></MyDropzone>
+                </div>
+                :
+                <div>
+                    <br></br>
+                </div>
+            }
+
+            {Mode === "download" ?
+                <div>
+                    <Downloadbutton downloadfile={downloadfile}></Downloadbutton>
+                </div>
+                :
+                <div>
+                    {Uploadid ?
+                        <div>
+                            {/* <a href={'/' + Uploadid} onClick={copyToClipboard}> copy </a> */}
+                            <button onClick={copyToClipboard}>
+                                copy link
+                            </button>
+                        </div>
+                        :
+                        <div>
+                        </div>
+                    }
+
+                </div>
+            }
+        </Fragment>
+    );
+}
+
+function Downloadbutton(props) {
+    return (
+        <Fragment>
+            <button type="button" onClick={props.downloadfile}>Download</button>
         </Fragment>
     );
 }
