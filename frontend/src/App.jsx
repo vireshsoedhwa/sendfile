@@ -9,6 +9,7 @@ export default function App() {
     const [Mode, setMode] = useState("upload")
     const [Downloadid, setDownloadid] = useState(null)
     const [Uploadid, setUploadid] = useState(null)
+    const [Downloadpage, setDownloadpage] = useState(null)
 
     const triggerdownload = (response) => {
         console.log(response)
@@ -70,8 +71,11 @@ export default function App() {
     }, []);
 
     const copyToClipboard = (e) => {
-        console.log(e.target.value)
-        console.log(window.location.href + Uploadid)
+        var copyText = document.getElementById("thelink");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); /* For mobile devices */
+        document.execCommand("copy");
+        alert("link Copied: " + copyText.value);
     }
 
 
@@ -96,6 +100,7 @@ export default function App() {
                     {Uploadid ?
                         <div>
                             {/* <a href={'/' + Uploadid} onClick={copyToClipboard}> copy </a> */}
+                            <textarea id="thelink">{Downloadpage}</textarea>
                             <button onClick={copyToClipboard}>
                                 copy link
                             </button>
