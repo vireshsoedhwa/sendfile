@@ -28,14 +28,22 @@ export default function App() {
     }
 
     const downloadfile = () => {
-        const link = document.createElement('a');
-        link.href = url;
-        console.log(window.location.href)
+        let hostparts = window.location.href.split("/")
+        let hostfull = hostparts[0] + "/" + hostparts[1] + "/" + hostparts[2] +
+            "/download/" + Downloadid
 
+        const link = document.createElement('a');
+        link.href = hostfull;
+        document.body.appendChild(link);
+        link.click();
     }
 
     const uploadfinished = (response) => {
+
+        // console.log(window.location.href + Uploadid)
+        setDownloadpage(window.location.href + response.data)
         setUploadid(response.data)
+
     }
 
     useEffect(() => {
