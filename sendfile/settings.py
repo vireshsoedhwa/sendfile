@@ -128,6 +128,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_ROOT = '/code/temp'
+STATIC_ROOT = "/var/www/html/static/"
 
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
