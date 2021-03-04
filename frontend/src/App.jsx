@@ -100,7 +100,7 @@ export default function App() {
                     {Uploadid ?
                         <div>
                             {/* <a href={'/' + Uploadid} onClick={copyToClipboard}> copy </a> */}
-                            <textarea id="thelink">{Downloadpage}</textarea>
+                            <textarea value={Downloadpage} id="thelink"></textarea>
                             <button onClick={copyToClipboard}>
                                 copy link
                             </button>
