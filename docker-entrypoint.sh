@@ -1,5 +1,4 @@
-#!/bin/sh
-
+#!/bin/bash
 set -e
 
 >&2 echo "Make Database migrations"
