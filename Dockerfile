@@ -16,7 +16,8 @@ COPY . /code
 
 COPY /nginx/nginx.conf /etc/nginx/nginx.conf
 
-RUN chmod +x ./docker-entrypoint.sh
+# RUN chmod +x ./docker-entrypoint.sh
+RUN ["chmod", "+x", "./docker-entrypoint.sh"]
 EXPOSE 8000
 # RUN chmod +x ./docker-entrypoint.sh
 ENTRYPOINT ["./docker-entrypoint.sh"]
