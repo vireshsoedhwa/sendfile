@@ -20,7 +20,7 @@ COPY /nginx/nginx.conf /etc/nginx/nginx.conf
 RUN ["chmod", "+x", "./docker-entrypoint.sh"]
 EXPOSE 8000
 # RUN chmod +x ./docker-entrypoint.sh
-ENTRYPOINT ["./docker-entrypoint.sh"]
+ENTRYPOINT ["sh", "./docker-entrypoint.sh"]
 # CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 # CMD ["tail", "-f", "requirements.txt"]
 # CMD ["gunicorn ", "sendfile.asgi:application", "-k", "uvicorn.workers.UvicornH11Worker"]
