@@ -1,4 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
+
+import PropTypes from 'prop-types';
+
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
@@ -8,6 +11,10 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+
+import LinearProgress from '@material-ui/core/LinearProgress';
+
+import Box from '@material-ui/core/Box';
 
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
@@ -62,10 +69,10 @@ export default function MyDropzone(props) {
     const classes = useStyles();
 
     const [isClicked, setIsClicked] = useState(false);
-
     const [StartUpload, setStartUpload] = useState(false);
-
     const [EnableUpload, setEnableUpload] = useState(false);
+
+    const [UploadProgress, setUploadProgress] = useState(0);
 
     const onDrop = (acceptedFiles) => {
         console.log(acceptedFiles[0]);
@@ -97,7 +104,8 @@ export default function MyDropzone(props) {
                 },
                 onUploadProgress: function (progressEvent) {
                     var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                    console.log(percentCompleted);
+                    setUploadProgress(percentCompleted)
+                    // console.log(percentCompleted);
                 }
             })
                 .then(function (response) {
@@ -186,6 +194,12 @@ export default function MyDropzone(props) {
                             }
                         </div>
                     </div>
+                    {/* <LinearProgress variant="determinate" value={UploadProgress} />
+                    <Typography variant="body2" color="textSecondary">
+                        {UploadProgress}
+                    </Typography> */}
+
+                    <LinearProgressWithLabel value={UploadProgress} />
                 </Grid>
 
                 <Grid item xs={12}>
@@ -208,3 +222,29 @@ export default function MyDropzone(props) {
 }
 
 <MyDropzone />
+
+
+
+function LinearProgressWithLabel(props) {
+    return (
+      <Box display="flex" alignItems="center">
+        <Box width="100%" mr={1}>
+          <LinearProgress variant="determinate" {...props} />
+        </Box>
+        <Box minWidth={35}>
+          <Typography variant="body2" color="textSecondary">{`${Math.round(
+            props.value,
+          )}%`}</Typography>
+        </Box>
+      </Box>
+    );
+  }
+  
+
+  LinearProgressWithLabel.propTypes = {
+    /**
+     * The value of the progress indicator for the determinate and buffer variants.
+     * Value between 0 and 100.
+     */
+    value: PropTypes.number.isRequired,
+  };
