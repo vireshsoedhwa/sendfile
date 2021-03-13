@@ -1,13 +1,40 @@
 import React, { useMemo, useState, useEffect } from 'react';
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload'
+
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 
+const useStyles = makeStyles({
+    root: {
+        minWidth: 275,
+    },
+    bullet: {
+        display: 'inline-block',
+        margin: '0 2px',
+        transform: 'scale(0.8)',
+    },
+    title: {
+        fontSize: 14,
+    },
+    pos: {
+        marginBottom: 12,
+    },
+});
+
 const baseStyle = {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    padding: '20px',
+    // flex: 1,
+    // display: 'grid',
+    // flexDirection: 'column',
+    // alignItems: 'center',
+    padding: '10vh',
     borderWidth: 2,
     borderRadius: 2,
     borderColor: '#eeeeee',
@@ -32,10 +59,17 @@ const rejectStyle = {
 
 export default function MyDropzone(props) {
 
+    const classes = useStyles();
+
     const [isClicked, setIsClicked] = useState(false);
+
+    const [StartUpload, setStartUpload] = useState(false);
+
+    const [EnableUpload, setEnableUpload] = useState(false);
 
     const onDrop = (acceptedFiles) => {
         console.log(acceptedFiles[0]);
+        setEnableUpload(true)
     };
 
 
@@ -67,7 +101,13 @@ export default function MyDropzone(props) {
                 }
             })
                 .then(function (response) {
-                    props.upload(response)
+
+                    if (response.status == 200) {
+                        props.upload(response)
+                        setEnableUpload(false)
+                    }
+
+
                 });
         };
 
@@ -108,23 +148,60 @@ export default function MyDropzone(props) {
     ]);
 
     return (
-        <div className="container">
-            <div {...getRootProps({ style })}>
-                <input {...getInputProps()} />
-                <div>
-                    {acceptedFiles.length > 0 ?
+        <div>
+            <Grid container spacing={3}>
+                <Grid item xs={12}>
+                    <div {...getRootProps({ style })}>
+                        <input {...getInputProps()} />
                         <div>
-                            {acceptedFiles[0].name}
+                            {acceptedFiles.length > 0 ?
+
+                                <div>
+
+                                    <Card className={classes.root}>
+                                        <CardContent>
+                                            <Typography className={classes.title} color="textSecondary" gutterBottom>
+                                                {acceptedFiles[0].name}
+                                            </Typography>
+
+                                        </CardContent>
+                                        <CardActions>
+                                            {/* <Button size="small">Learn More</Button> */}
+                                            {/* <Button variant="contained" onClick={onclickHandler}>Upload</Button> */}
+                                        </CardActions>
+                                    </Card>
+                                    {/* {acceptedFiles[0].name} */}
+                                    {/* <Button variant="contained" onClick={onclickHandler}>Upload</Button> */}
+                                </div>
+
+
+                                :
+                                <div>
+                                    <Typography className={classes.title} color="textSecondary" gutterBottom>
+                                        Drag 'n' drop zip files here, or click to select zip files
+                                    </Typography>
+
+                                    <CloudUploadIcon />
+                                </div>
+                            }
                         </div>
+                    </div>
+                </Grid>
+
+                <Grid item xs={12}>
+                    {/* <Button variant="contained" disabled={!acceptedFiles[0]} onClick={onclickHandler}>Upload</Button> */}
+
+                    {EnableUpload ?
+                        <Button variant="contained" color="primary" onClick={onclickHandler}>Upload</Button>
                         :
                         <div>
-                            Drag 'n' drop some files here, or click to select files
-                    </div>
+                        </div>
                     }
-                </div>
-            </div>
+                </Grid>
 
-            <button type="button" disabled={!acceptedFiles[0]} onClick={onclickHandler}>Upload</button>
+
+                {/* <button type="button" disabled={!acceptedFiles[0]} onClick={onclickHandler}>Upload</button> */}
+            </Grid>
 
         </div>
     );

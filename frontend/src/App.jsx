@@ -1,15 +1,46 @@
 import React, { Fragment, useEffect, useState, useMemo } from 'react';
+
+import { makeStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+
+import Typography from '@material-ui/core/Typography';
+
 import MyDropzone from './Dropzone'
 
 import axios from 'axios';
 
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        flexGrow: 1,
+        '& > *': {
+            // margin: theme.spacing(4),
+            // padding: theme.spacing(1)
+        },
+    },
+    // paper: {
+    //     padding: theme.spacing(4),
+    //     textAlign: 'center',
+    //     color: theme.palette.text.secondary,
+    // },
+}));
+
+
+
 export default function App() {
+
+    const classes = useStyles();
+
     const [Data, setData] = useState(null);
     const [Url, setUrl] = useState(null);
     const [Mode, setMode] = useState("upload")
     const [Downloadid, setDownloadid] = useState(null)
     const [Uploadid, setUploadid] = useState(null)
     const [Downloadpage, setDownloadpage] = useState(null)
+
+    const [LinkCopied, setLinkCopied] = useState(false)
 
     const triggerdownload = (response) => {
         console.log(response)
@@ -70,48 +101,95 @@ export default function App() {
 
     }, []);
 
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setLinkCopied(false)
+        }, 1000);
+        return () => clearTimeout(timer);
+    }, [LinkCopied]);
+
+
     const copyToClipboard = (e) => {
-        var copyText = document.getElementById("thelink");
-        copyText.select();
-        copyText.setSelectionRange(0, 99999); /* For mobile devices */
-        document.execCommand("copy");
-        alert("link Copied: " + copyText.value);
+        // var copyText = document.getElementById("thelink");
+        // copyText.select();
+        // copyText.setSelectionRange(0, 99999); /* For mobile devices */
+        // document.execCommand("copy");
+        // alert("link Copied: " + Downloadpage);
+        navigator.clipboard.writeText(Downloadpage)
+        setLinkCopied(true)
     }
 
 
     return (
         <Fragment>
-            {Mode === "upload" ?
-                <div>
-                    <MyDropzone upload={uploadfinished}></MyDropzone>
-                </div>
-                :
-                <div>
-                    <br></br>
-                </div>
-            }
+            <div className={classes.root}>
+                <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                        {/* <Paper className={classes.paper}>xs=12</Paper> */}
+                        {/* <Button variant="contained">Default</Button> */}
 
-            {Mode === "download" ?
-                <div>
-                    <Downloadbutton downloadfile={downloadfile}></Downloadbutton>
-                </div>
-                :
-                <div>
-                    {Uploadid ?
-                        <div>
-                            {/* <a href={'/' + Uploadid} onClick={copyToClipboard}> copy </a> */}
-                            <textarea value={Downloadpage} id="thelink"></textarea>
-                            <button onClick={copyToClipboard}>
-                                copy link
-                            </button>
-                        </div>
-                        :
-                        <div>
-                        </div>
-                    }
+                        {Mode === "upload" ?
+                            <div>
+                                <MyDropzone upload={uploadfinished}></MyDropzone>
+                            </div>
+                            :
+                            <div>
+                                <br></br>
+                            </div>
+                        }
 
-                </div>
-            }
+                    </Grid>
+
+                    <Grid item xs={12}>
+                        {Mode === "download" ?
+                            <div>
+                                <Downloadbutton downloadfile={downloadfile}></Downloadbutton>
+                            </div>
+                            :
+                            <div>
+                                {Uploadid ?
+
+                                    <div>
+                                        <Typography className={classes.title} color="textSecondary" gutterBottom>
+                                            {Downloadpage}
+                                        </Typography>
+                                        <Button variant="contained" color="primary" onClick={copyToClipboard}>
+                                            {LinkCopied ?
+                                                <Fragment>
+                                                    link copied
+                                                </Fragment>
+                                                :
+                                                <Fragment>
+                                                    copy link
+                                                </Fragment>
+
+                                            }
+
+
+                                        </Button>
+
+                                        {/* <a href={'/' + Uploadid} onClick={copyToClipboard}> copy </a> */}
+                                        {/* <textarea value={Downloadpage} id="thelink" readOnly></textarea>
+                                        <button onClick={copyToClipboard}>
+                                            copy link
+                                        </button> */}
+
+
+
+                                    </div>
+
+                                    :
+                                    <div>
+                                    </div>
+                                }
+
+                            </div>
+                        }
+                    </Grid>
+
+                </Grid>
+
+            </div>
         </Fragment>
     );
 }
@@ -119,7 +197,10 @@ export default function App() {
 function Downloadbutton(props) {
     return (
         <Fragment>
-            <button type="button" onClick={props.downloadfile}>Download</button>
+            <Button variant="contained" color="primary" onClick={props.downloadfile}>
+                Download
+            </Button>
+            {/* <button type="button" onClick={props.downloadfile}>Download</button> */}
         </Fragment>
     );
 }
