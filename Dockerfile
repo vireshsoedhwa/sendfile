@@ -11,6 +11,7 @@ RUN apt-get update &&  \
 COPY requirements.txt /code   
 RUN pip install --upgrade pip \
     pip install -r requirements.txt
+
 COPY . /code
 
 
@@ -18,7 +19,7 @@ COPY /nginx/nginx.conf /etc/nginx/nginx.conf
 
 # RUN chmod +x ./docker-entrypoint.sh
 RUN ["chmod", "+x", "./docker-entrypoint.sh"]
-EXPOSE 8000
+EXPOSE 8000 8001
 # RUN chmod +x ./docker-entrypoint.sh
 ENTRYPOINT ["sh", "./docker-entrypoint.sh"]
 # CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -6,4 +6,4 @@ __pycache__
 migrations
 database
 temp
-static
+frontend/static/
