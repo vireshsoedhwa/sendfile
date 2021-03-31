@@ -21,7 +21,7 @@ class ReceivedFile(models.Model):
         upload_to=format_file_path, blank=True, null=True)
     session = models.TextField(blank=True, null=True)
     expired = models.BooleanField(blank=True, null=True)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     def filename(self):
         return os.path.basename(self.fileobject.name)
