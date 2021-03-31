@@ -147,6 +147,7 @@ Q_CLUSTER = {
     'save_limit': 250,
     'queue_limit': 500,
     'label': 'Django Q',
-    'orm': 'default'
+    'orm': 'default',
+    'catch_up': False
 }
 
